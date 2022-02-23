@@ -103,9 +103,8 @@ string RC4(string cadena, string clave){
 
     t = (int(S[i].to_ulong()) + int(S[j].to_ulong()))%256;
 
-    
-
-
+    cout << "Byte " << c << " de la secuencia cifrante: S[" << t << "] = " << int(S[t].to_ulong()) << " BIN: " << S[t] << endl;
+    cout << "Byte " << c << " de texto original : M[" << c << "] = " << cadena[c] << endl;
   }
 
 
