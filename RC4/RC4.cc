@@ -103,8 +103,12 @@ string RC4(string cadena, string clave){
 
     t = (int(S[i].to_ulong()) + int(S[j].to_ulong()))%256;
 
-    cout << "Byte " << c << " de la secuencia cifrante: S[" << t << "] = " << int(S[t].to_ulong()) << " BIN: " << S[t] << endl;
-    cout << "Byte " << c << " de texto original : M[" << c << "] = " << cadena[c] << endl;
+    cout << "Byte " << c + 1 << " de la secuencia cifrante: S[" << t << "] = " << int(S[t].to_ulong()) << " BIN: " << S[t] << endl;
+    cout << "Byte " << c + 1 << " de texto original : M[" << c << "] = " << cadena[c] << " BIN: " << byte(cadena[c]) << endl;
+    cout << "Byte " << c + 1 << " de texto cifrado : C[" << c << "] = " << Encriptado(byte(cadena[c]).to_string(),S[t].to_string()) << endl;
+  
+    resultado += Encriptado(byte(cadena[c]).to_string(),S[t].to_string());
+  
   }
 
 
@@ -145,14 +149,15 @@ int main (void){
     }
 
     case 2:{
-      string cadena, clave;
+      string cadena, clave, resultado;
       cout << "Introduzca el mensaje: ";
       cin >> cadena;
 
       cout << "Introduzca la clave  : ";
       cin >> clave;
       
-      RC4(cadena, clave);
+      resultado = RC4(cadena, clave);
+      cout << "Secuencia cifrada: " << resultado << endl;
 
       break;
     }
