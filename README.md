@@ -5,5 +5,5 @@
 
 ## Status
 
-* **Vernam** - [x]
+* **Vernam** -[x]
 * **RC4**    Funcional, posible cambio de salida por pantalla.
