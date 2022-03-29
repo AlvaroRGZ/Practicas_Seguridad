@@ -6,4 +6,7 @@
 ## Status
 
 - [x] **Vernam** 
-* **RC4**    Funcional, posible cambio de salida por pantalla.
+- [x] **RC4**
+- [x] **ChaCha20**
+- [x] **C / A generator**
+- [x] **SNOW - AES multiplication**
