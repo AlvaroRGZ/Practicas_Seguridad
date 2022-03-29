@@ -12,7 +12,7 @@
 
 using namespace std;
 
-typedef bitset<8> byte;
+typedef bitset<8> Byte;
 typedef uint32_t palabra;
 
 string BinarioACadena(string cadena){
@@ -20,7 +20,7 @@ string BinarioACadena(string cadena){
   int Ncaracter = cadena.size()/8;
   for (int i = 0; i < Ncaracter; i++){
     string caracter = cadena.substr(i*8, (i+1)*8);
-    byte aux = byte(caracter);
+    Byte aux = Byte(caracter);
     char car = char(int(aux.to_ulong()));
     resultado += car;
   }
@@ -45,7 +45,7 @@ string BinHexACadena(string cadena){
 string CadenaABinario(string cadena){
   string resultado;
   for (int i = 0; i < cadena.size(); i++){
-    resultado += byte(cadena.c_str()[i]).to_string();
+    resultado += Byte(cadena.c_str()[i]).to_string();
   }
   return resultado;
 }
