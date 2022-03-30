@@ -117,11 +117,14 @@ void RDRL(secuencia &x) {
 
 // Genera la secuancia cifrante C/A de longitud lenght
 // con el satelite satID, Mostramos traza o no segun trace
-string caGenerator(int satID1, int lenght, bool trace){
+string caGenerator(int satID1, int satID2, int lenght, bool trace){
 
   // Obtenemos los indices del satelite
   pair<int, int> x = selectorGPS(satID1);
   int fb1 = 10 - x.first, sb1 = 10 - x.second; 
+
+  pair<int, int> y = selectorGPS(satID2);
+  int fb2 = 10 - y.first, sb2 = 10 - y.second; 
 
   string output;
 
@@ -134,12 +137,12 @@ string caGenerator(int satID1, int lenght, bool trace){
 
   for (int i = 0; i < lenght; i++) {
     re1 = g1[  7] ^ g1[  0];
-    ca1 = g1[0];
+    ca1 = g1[fb1] ^ g1[sb1];
     RDRL(g1);
     g1.set(9,re1);  // Realimentamos con r1 por la cabeza
 
     re2 = g2[8] ^ g2[7] ^ g2[4] ^ g2[2] ^ g2[1] ^ g2[0];
-    ca2 = g2[fb1] ^ g2[sb1];
+    ca2 = g2[fb2] ^ g2[sb2];
     RDRL(g2);
     g2.set(9, re2); // Realimentamos con r2 por la cabeza
     
@@ -176,10 +179,11 @@ int main (void){
     {
 
     case 1:{
-      bool t; int s1, l = 14;
+      bool t; int s1, s2, l = 14;
       cout << "Trace? (0 | 1) > "; cin >> t; cout << endl;
       cout << "sat1? > "; cin >> s1; cout << endl;
-      cout << "Secuencia C/A PRN1 = " << caGenerator(s1, l, t) << endl;
+      cout << "sat2? > "; cin >> s2; cout << endl;
+      cout << "Secuencia C/A PRN1 = " << caGenerator(s1, s2, l, t) << endl;
       break;
     }
     case 0:
