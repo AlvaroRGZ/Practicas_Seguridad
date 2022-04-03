@@ -42,6 +42,36 @@ string BinHexACadena(string cadena){
   return resultado;
 }
 
+// De cadena hexadecimal al cadena binario
+string HexToBin(string cadena) {
+  string resultado;
+  for (int i = 0; i < cadena.size(); i++){
+    switch (cadena[i]){
+      case 'a':
+        resultado += bitset<4>(10).to_string();
+        break;
+      case 'b':
+        resultado += bitset<4>(11).to_string();
+        break;
+      case 'c':
+        resultado += bitset<4>(12).to_string();
+        break;
+      case 'd':
+        resultado += bitset<4>(13).to_string();
+        break;
+      case 'e':
+        resultado += bitset<4>(14).to_string();
+        break;
+      case 'f':
+        resultado += bitset<4>(15).to_string();
+        break;
+      default:
+        resultado += bitset<4>(cadena[i]).to_string();
+    }
+  }
+  return resultado;
+}
+
 string CadenaABinario(string cadena){
   string resultado;
   for (int i = 0; i < cadena.size(); i++){
