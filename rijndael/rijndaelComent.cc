@@ -295,15 +295,29 @@ vector<estado> expanseKey(estado c) {
     first = RotWord(first);
     first = SubBytesColumn(first);
 
+    // showCol(first);
+
     first = addColumns(first, getCol(out[i-1], 0));  // Sumamos la primera col de la iter anterior, 
     first = addColumns(first, rc[i - 1]);    // con la que habiamos generado mas el rc correspondiente
+
+    // showCol(first);
 
     assignCol(nuevo, first, 0); // Asignamos first como la primera col de nuevo
     for (int j = 1; j < 4; j++){
       columna c1 = getCol(out[i - 1], j);
+      //cout << "c1 "<< endl;
+      //showCol(c1);
       columna c2 = getCol(nuevo, j - 1);
+      //cout << "c2" << endl;
+      //showCol(c2);
+      //cout << "Añado col a nuevo en " << j << endl;
+      columna c3 = addColumns(c1, c2);
+      //showCol(c3);
+      //cout << "---" << endl;
       assignCol(nuevo, addColumns(c1, c2), j);
     }
+    //cout << "result" << endl;
+    //showEstado(nuevo);
     out.push_back(nuevo);
   }
   return out;
