@@ -363,11 +363,12 @@ int main (void){
     cout << "--------------------" << endl;
     cin >> opt;
 
-    switch (opt){
-      case 1:{
+    switch (opt){                       //1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 
+                                        //00112233445566778899aabbccddeeff
+      case 1:{                        // "000102030405060708090a0b0c0d0e0f"
         
-        estado clave  = claveToEstado("000102030405060708090a0b0c0d0e0f");
-        estado origen = claveToEstado("00112233445566778899aabbccddeeff");
+        estado clave  = claveToEstado("0004080c0105090d02060a0e03070b0f");
+        estado origen = claveToEstado("004488cc115599dd2266aaee3377bbff");
 
         cout << "Bloque final:" << endl;
         showEstado(Rijndael(origen, clave));
