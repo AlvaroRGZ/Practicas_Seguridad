@@ -76,7 +76,13 @@ void showCol(columna e) {
   cout << "――" << endl;
 }
 
-estado claveToEstado(string clave){
+estado cadenaToEstado(string clave){
+
+  if (clave.size() < 32) {
+    for (int i = clave.size(); i <= 32; i++)
+      clave += "0";
+  }
+
   estado out;
   out.resize(4);
   for (int i = 0; i < 4; i++)
@@ -86,6 +92,16 @@ estado claveToEstado(string clave){
     for (int j = 0; j < 4; j++) {
       out[i][j] = Byte(HexToBin(clave.substr(count, 2)));
       count += 2;
+    }
+  }
+  return out;
+}
+
+string estadoToCadena(estado e){
+  string out;
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      out += BinHexACadena(e[j][i].to_string());
     }
   }
   return out;
@@ -323,7 +339,7 @@ estado Rijndael (estado e, estado  c) {
   // Etapa inicial
   vector<estado> subc = expanseKey(c);  // Generamos las 10 subclaves
   estado out = addRoundKey(e, c);       // Primera fase AddRoundKey clave original
-  showIter(out, c, 0);
+  // showIter(out, c, 0);
 
   // 9 iteraciones
   for (int i = 1; i < nIter; i++) {
@@ -332,18 +348,18 @@ estado Rijndael (estado e, estado  c) {
     out = shiftRows(out);
     out = mixColums(out);
     out = addRoundKey(out, subc[i]);
-    showIter(out, subc[i], i);
+    // showIter(out, subc[i], i);
 
   }
   // Etapa final
   out = SubBytes(out);
   out = shiftRows(out);
   out = addRoundKey(out, subc[10]);
-  showIter(out, subc[10], 10);
+  // showIter(out, subc[10], 10);
 
   return out;
 }
-
+/*
 int main (void){
 
   bool quit = false;
@@ -367,8 +383,8 @@ int main (void){
                                         //00112233445566778899aabbccddeeff
       case 1:{                        // "000102030405060708090a0b0c0d0e0f"
         
-        estado clave  = claveToEstado("0004080c0105090d02060a0e03070b0f");
-        estado origen = claveToEstado("004488cc115599dd2266aaee3377bbff");
+        estado clave  = cadenaToEstado("0004080c0105090d02060a0e03070b0f");
+        estado origen = cadenaToEstado("004488cc115599dd2266aaee3377bbff");
 
         cout << "Bloque final:" << endl;
         showEstado(Rijndael(origen, clave));
@@ -376,32 +392,32 @@ int main (void){
         break;
       }
       case 2:{
-        estado e1 = claveToEstado("328831e0435a3137f6309807a88da234");
-        estado e2 = claveToEstado("2b28ab097eaef7cf15d2154f16a6883c");
+        estado e1 = cadenaToEstado("328831e0435a3137f6309807a88da234");
+        estado e2 = cadenaToEstado("2b28ab097eaef7cf15d2154f16a6883c");
 
         showEstado(addRoundKey(e1, e2));
 
         break;
       }
       case 3:{
-        estado e1 = claveToEstado("328831e0435a3137f6309807a88da234");
-        estado e2 = claveToEstado("2b28ab097eaef7cf15d2154f16a6883c");
+        estado e1 = cadenaToEstado("328831e0435a3137f6309807a88da234");
+        estado e2 = cadenaToEstado("2b28ab097eaef7cf15d2154f16a6883c");
         estado e3 = addRoundKey(e1, e2);
         showEstado(SubBytes(e3));
         break;
       }
       case 4:{
 
-        estado e1 = claveToEstado("328831e0435a3137f6309807a88da234");
-        estado e2 = claveToEstado("2b28ab097eaef7cf15d2154f16a6883c");
+        estado e1 = cadenaToEstado("328831e0435a3137f6309807a88da234");
+        estado e2 = cadenaToEstado("2b28ab097eaef7cf15d2154f16a6883c");
         estado e3 = addRoundKey(e1, e2);
         estado e4 = SubBytes(e3);
         showEstado(shiftRows(e4));
         break;
       }
       case 5:{
-        estado e1 = claveToEstado("328831e0435a3137f6309807a88da234");
-        estado e2 = claveToEstado("2b28ab097eaef7cf15d2154f16a6883c");
+        estado e1 = cadenaToEstado("328831e0435a3137f6309807a88da234");
+        estado e2 = cadenaToEstado("2b28ab097eaef7cf15d2154f16a6883c");
         estado e3 = addRoundKey(e1, e2);
         estado e4 = SubBytes(e3);
         estado e5 = shiftRows(e4);
@@ -410,7 +426,7 @@ int main (void){
       }
 
       case 6:{
-        estado e1 = claveToEstado("2b28ab097eaef7cf15d2154f16a6883c");  // d0 c9 e1 b6 
+        estado e1 = cadenaToEstado("2b28ab097eaef7cf15d2154f16a6883c");  // d0 c9 e1 b6 
         showEstado(e1);                                                 // 14 ee 3f 63 
         vector<estado> x = expanseKey(e1);                              // f9 25 0c 0c 
                                                                         // a8 89 c8 a6 
@@ -430,7 +446,7 @@ int main (void){
 
   return 0;
 }
-
+*/
 
 /*
         columna x = { Byte(string("00000001")), 
