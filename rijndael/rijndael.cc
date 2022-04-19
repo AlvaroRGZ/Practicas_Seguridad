@@ -3,8 +3,10 @@ using namespace std;
 
 const Byte AES_byte  = Byte(string("00011011"));
 const Byte SNOW_byte = Byte(string("10101001"));
-typedef vector<vector<Byte>> estado;
-typedef vector<Byte> columna;
+
+// Incluidos en commons.cc
+// typedef vector<vector<Byte>> estado;
+// typedef vector<Byte> columna;
 
 const int nIter = 10;
 
@@ -74,37 +76,6 @@ void showCol(columna e) {
     cout << BinHexACadena(e[i].to_string()) << endl;
   }
   cout << "――" << endl;
-}
-
-estado cadenaToEstado(string clave){
-
-  if (clave.size() < 32) {
-    for (int i = clave.size(); i <= 32; i++)
-      clave += "0";
-  }
-
-  estado out;
-  out.resize(4);
-  for (int i = 0; i < 4; i++)
-    out[i].resize(4);
-  int count = 0;
-  for (int i = 0; i < 4; i++) {
-    for (int j = 0; j < 4; j++) {
-      out[i][j] = Byte(HexToBin(clave.substr(count, 2)));
-      count += 2;
-    }
-  }
-  return out;
-}
-
-string estadoToCadena(estado e){
-  string out;
-  for (int i = 0; i < 4; i++) {
-    for (int j = 0; j < 4; j++) {
-      out += BinHexACadena(e[j][i].to_string());
-    }
-  }
-  return out;
 }
 
 Byte mult(Byte b1, int pos, Byte Const) {

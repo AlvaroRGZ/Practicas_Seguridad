@@ -14,6 +14,8 @@ using namespace std;
 
 typedef bitset<8> Byte;
 typedef uint32_t palabra;
+typedef vector<vector<Byte>> estado;
+typedef vector<Byte> columna;
 
 string BinarioACadena(string cadena){
   string resultado;
@@ -136,6 +138,37 @@ string Encriptado(string cad_bin, string clave){
     }
   }
   return resultado;
+}
+
+estado cadenaToEstado(string clave){
+
+  if (clave.size() < 32) {
+    for (int i = clave.size(); i <= 32; i++)
+      clave += "0";
+  }
+
+  estado out;
+  out.resize(4);
+  for (int i = 0; i < 4; i++)
+    out[i].resize(4);
+  int count = 0;
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      out[i][j] = Byte(HexToBin(clave.substr(count, 2)));
+      count += 2;
+    }
+  }
+  return out;
+}
+
+string estadoToCadena(estado e){
+  string out;
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      out += BinHexACadena(e[j][i].to_string());
+    }
+  }
+  return out;
 }
 
 void menu(void){
