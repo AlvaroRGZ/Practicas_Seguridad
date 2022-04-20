@@ -24,10 +24,10 @@ string shuffleBytes(string x) {
   string out;
   for (int i = 0; i < 4; i++) {
     for (int j = 0; j < 4; j++) {
-      out += x[(i + 4 * j)% x.size()];
+      out += x.substr((i + 4 * j)% x.size(), 2);;
     }
   }
-
+  return out;
 }
 
 CadenaBloques CBC(CadenaBloques plaintext, estado clave, estado IV) {
@@ -80,37 +80,34 @@ int main (void){
   bool quit = false;
   int opt;
 
+  estado key  = cadenaToEstado("0004080c0105090d02060a0e03070b0f");
+  estado b1  = cadenaToEstado("004488cc115599dd2266aaee3377bbff");
+  estado b2  = cadenaToEstado("00000000000000000000000000000000");
+  string ib2cad = "000000000000000000000000000000";
+  estado ib2 = cadenaToEstado(ib2cad);
+  estado iv  = cadenaToEstado("00000000000000000000000000000000");
+
   while(!quit){
 
     cout << "--------------------" << endl;
     cout << "Elija una opción: " << endl;
-    cout << "1) Rijndael" << endl;
-    cout << "2) Prueba addRoundKey" << endl;
-    cout << "3) Prueba subBytes" << endl;
-    cout << "4) Prueba ShiftRow" << endl;
-    cout << "5) Prueba MixColumns" << endl;
-    cout << "6) Prueba Expansion de clave" << endl;
+    cout << "1) CBC" << endl;
+    cout << "2) Stealing CBC" << endl;
     cout << "0) Salir" << endl;
     cout << "--------------------" << endl;
     cin >> opt;
+    
 
     switch (opt){
       case 1:{
-
-        estado key  = cadenaToEstado("0004080c0105090d02060a0e03070b0f");
-        estado b1  = cadenaToEstado("004488cc115599dd2266aaee3377bbff");
-        estado b2  = cadenaToEstado("00000000000000000000000000000000");
-        string ib2cad = "000000000000000000000000000000";
-        estado ib2 = cadenaToEstado(ib2cad);
-        estado iv  = cadenaToEstado("00000000000000000000000000000000");
-        
         CadenaBloques cb = {b1, ib2};
-        showCBCSecuence(stealingCBC(cb, key, iv, emptyString(ib2cad)));
+        showCBCSecuence(CBC(cb, key, iv));
 
         break;
       }
       case 2:{
-
+        CadenaBloques cb = {b1, ib2};
+        showCBCSecuence(stealingCBC(cb, key, iv, emptyString(ib2cad)));
         break;
       }
       case 0:
