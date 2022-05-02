@@ -6,7 +6,6 @@ int main (void){
 
   bool quit = false;
   int opt;
-  RSA encoder;
 
   while(!quit){
 
@@ -22,14 +21,29 @@ int main (void){
 
     switch (opt){
       case 1:{
-        int p = 43, alpha = 23, xa = 25, xb = 33, m = 18;
-        cout << ((encoder.lehmanPeralta(423)) ? "Primo" : "No es primo") << endl;
+        string mensaje;
+        long p, q, d;
+        cout << "Mensaje > ";
+        cin >> mensaje;
+        cout << "P > ";
+        cin >> p;
+        cout << "q > ";
+        cin >> q;
+        cout << "d > ";
+        cin >> d;
+        RSA encoder(mensaje, p, q, d);
+        encoder.printData();
+
         break;
       }
       case 2:{
         break;
       }
       case 3:{
+        RSA encoder("MANDADINEROS", 421, 7, 1619);
+        encoder.printData();
+        RSA encoder2("AMIGOMIO", 2347, 347, 5);
+        encoder2.printData();
         break;
       }
       case 0:

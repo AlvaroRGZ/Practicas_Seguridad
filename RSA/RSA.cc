@@ -1,31 +1,96 @@
 #include "../include/commons.cc"
-
+typedef long long Dlong;
+Dlong mod(Dlong x, Dlong mod) {
+  if (x < 0) {
+    while (x < 0) {
+      x += mod;
+    }
+  } else {
+    x %= mod;
+  }
+  return x;
+}
 class RSA {
   private:
-    long _p, _q;
-    int _mod;
-    std::vector<int> primerosPrimos = {2, 3, 5, 7, 11, 13, 17, 19};
-		std::string alfabeto = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    std::vector<int> mensaje_codificado;
-    std::vector<int> mensaje_cifrado;
+    Dlong _p, _q, _d, _fi, _n, _e;
+    vector<Dlong> primerosPrimos = {2, 3, 5, 7, 11, 13, 17, 19};
+	  string alfabeto = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    vector<Dlong> mensaje_codificado;
+    vector<Dlong> mensaje_cifrado;
 
   public:
 
-    int ExponenciacionRapida(int a, int b, int m);
-    long EuclideExtendido(long a, long b);
-    bool lehmanPeralta(long p);
+    Dlong ExponenciacionRapida(Dlong a, Dlong b, Dlong m);
+    Dlong EuclideExtendido(Dlong a, Dlong b);
+    bool lehmanPeralta(Dlong p);
+    vector<Dlong> codificarMensaje(string mensaje);
+    Dlong blockCypher(string block, Dlong blockSize);
+    void printData();
 
-    RSA(){}
+    RSA(string mensaje, Dlong p, Dlong q, Dlong d);
     ~RSA(){}
 
     void execute();
 };
 
+RSA::RSA(string mensaje, Dlong p, Dlong q, Dlong d){
+  // Calculamos fi, n y e 
+  _fi = (p - 1) * (q - 1);
+  _n = p * q;
+  _d = d;
+  _e = mod(EuclideExtendido(d, _fi), _fi); // Inverso de d modulo fi
+  // Codificamos y encriptamos el mensaje
+  codificarMensaje(mensaje);
+}
+
+void RSA::printData() {
+  cout << "------------------------------------------------" << endl;
+  cout << "Fi = " << _fi << endl; 
+  cout << "N  = " << _n << endl;
+  cout << "d  = " << _d << endl;
+  cout << "e  = " << _e << endl;
+  cout << "Mensaje codificado : " << "< ";
+  for (Dlong i = 0; i < mensaje_codificado.size(); i++)
+    cout << mensaje_codificado[i] << " ";
+  cout << ">" << endl;
+  cout << "Mensaje cifrado    : " << "< ";
+  for (Dlong i = 0; i < mensaje_cifrado.size(); i++)
+    cout << mensaje_cifrado[i] << " ";
+  cout << ">" << endl;
+  cout << "------------------------------------------------" << endl;
+}
+
+vector<Dlong> RSA::codificarMensaje(string mensaje) {
+  Dlong blockSize = (Dlong)std::log(_n) / (Dlong)std::log(alfabeto.size());
+  cout << "Tamaño del bloque: " << blockSize << " | Genera " << mensaje.size() / blockSize << " bloques" << endl;
+
+  vector<Dlong> out;
+
+  Dlong temp;
+  for (Dlong i = 0; i < mensaje.size(); i += blockSize)  {
+    string block = mensaje.substr(i, blockSize);
+    temp = blockCypher(block, blockSize);
+    out.push_back(temp);
+    // Aprovechamos que tenemos los valores de cada bloque para cifrarlos directamente
+    mensaje_cifrado.push_back(ExponenciacionRapida(temp, _e, _n));
+  }
+
+  mensaje_codificado = out; // guardamos los datos en el atributo
+  return out;
+}
+
+Dlong RSA::blockCypher(string block, Dlong blockSize) {
+  Dlong out = 0;
+  for (Dlong i = 0; i < blockSize; i++)
+    out += ((block[i] == ' ')? alfabeto.find('X') : alfabeto.find(block[i])) * ExponenciacionRapida(alfabeto.size(), blockSize - (i + 1), _n); // Modulo infinito?
+  return out;
+}
+
 // Devuelve el numero de bytes que le faltan para completar
 // un estado
-int RSA::ExponenciacionRapida(int a, int b, int m) {
-  int x = 1;
-  int y = a % m;
+Dlong RSA::ExponenciacionRapida(Dlong a, Dlong b, Dlong m) {
+  Dlong x = 1;
+  Dlong y = a % m;
   while (b > 0 && y > 1) {
     if (b%2 == 1) {
       x = (x * y) % m;
@@ -38,11 +103,11 @@ int RSA::ExponenciacionRapida(int a, int b, int m) {
   return x;
 }
 
-long RSA::EuclideExtendido(long a, long b) {
+Dlong RSA::EuclideExtendido(Dlong a, Dlong b) {
 
-  long x = 1, y = 0;
-  long xLast = 0, yLast = 1;
-  long q, r, m, n;
+  Dlong x = 1, y = 0;
+  Dlong xLast = 0, yLast = 1;
+  Dlong q, r, m, n;
   while (a != 0) {
       q = b / a;
       r = b % a;
@@ -55,22 +120,21 @@ long RSA::EuclideExtendido(long a, long b) {
   return xLast;
 }
 
-bool RSA::lehmanPeralta(long p) {
-	for (int i = 0; i < primerosPrimos.size(); i++)
+bool RSA::lehmanPeralta(Dlong p) {
+	for (Dlong i = 0; i < primerosPrimos.size(); i++)
 		if ((p % primerosPrimos[i] == 0) && (p != primerosPrimos[i]))
 			return false;
 
 	//Enteros aleatorios entre 2 y p-1
-	std::vector<int> randPrimes;
+	std::vector<Dlong> randPrimes;
 
-	for (int i = 0; i < 6; i++) // 65 + rand() % (122 - 65)
+	for (Dlong i = 0; i < 6; i++) // 65 + rand() % (122 - 65)
 		randPrimes.push_back(2 + rand() %((p - 1) - 2));
 
-	// Calcular Ai^((p-1)/2) % p. Si todos dan 1 es compuesto.
+	// Ai^((p-1)/2) % p. Todos deben dar 1, desde que 1 falle, no lo es.
 	bool compuesto = true;
-	for (int i = 0; i < randPrimes.size(); i++)
-		if (ExponenciacionRapida(randPrimes[i], (p - 1) / 2, p) != 1)
-		{
+	for (Dlong i = 0; i < randPrimes.size(); i++)
+		if (ExponenciacionRapida(randPrimes[i], (p - 1) / 2, p) != 1) {
 			compuesto = false;
 			break;
 		}
@@ -79,8 +143,8 @@ bool RSA::lehmanPeralta(long p) {
 		return false;
 
 	// Si existe un i tal que Ai^((p-1)/2) % p != -1, es compuesto.
-	int temp = 0;
-	for (int i = 0; i < randPrimes.size(); i++) {
+	Dlong temp = 0;
+	for (Dlong i = 0; i < randPrimes.size(); i++) {
 		temp = ExponenciacionRapida(randPrimes[i], (p - 1) / 2, p);
 		if (temp != 1)
 			temp -= p;
@@ -92,3 +156,5 @@ bool RSA::lehmanPeralta(long p) {
 	//Tal vez es primo
 	return true;
 }
+
+
