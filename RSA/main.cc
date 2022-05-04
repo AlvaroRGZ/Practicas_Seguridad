@@ -11,9 +11,8 @@ int main (void){
 
     cout << "---------------――---" << endl;
     cout << "Elija una opción: " << endl;
-    cout << "1) RSA automatico" << endl;
-    cout << "2) RSA manual" << endl;
-    cout << "3) Banco de Pruebas" << endl;
+    cout << "1) RSA manual" << endl;
+    cout << "2) Banco de Pruebas" << endl;
     cout << "0) Salir" << endl;
     cout << "--------------------" << endl;
     
@@ -37,9 +36,6 @@ int main (void){
         break;
       }
       case 2:{
-        break;
-      }
-      case 3:{
         RSA encoder("MANDADINEROS", 421, 7, 1619);
         encoder.printData();
         RSA encoder2("AMIGOMIO", 2347, 347, 5);

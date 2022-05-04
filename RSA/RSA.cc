@@ -1,5 +1,9 @@
 #include "../include/commons.cc"
+
 typedef long long Dlong;
+
+const int nPrimos = 50;
+
 Dlong mod(Dlong x, Dlong mod) {
   if (x < 0) {
     while (x < 0) {
@@ -10,6 +14,7 @@ Dlong mod(Dlong x, Dlong mod) {
   }
   return x;
 }
+
 class RSA {
   private:
     Dlong _p, _q, _d, _fi, _n, _e;
@@ -34,6 +39,9 @@ class RSA {
 };
 
 RSA::RSA(string mensaje, Dlong p, Dlong q, Dlong d){
+  // Comprobamos que sean primos
+  assert(lehmanPeralta(p) && lehmanPeralta(q));
+
   // Calculamos fi, n y e 
   _fi = (p - 1) * (q - 1);
   _n = p * q;
@@ -64,6 +72,12 @@ vector<Dlong> RSA::codificarMensaje(string mensaje) {
   Dlong blockSize = (Dlong)std::log(_n) / (Dlong)std::log(alfabeto.size());
   cout << "Tamaño del bloque: " << blockSize << " | Genera " << mensaje.size() / blockSize << " bloques" << endl;
 
+  // Rellenamos con X el tam no sea multiplo del tamaño de bloque
+  if ((mensaje.size() % blockSize) == 0) {
+    for (int i = 0; i < mensaje.size() % blockSize; i++)
+      mensaje.push_back('X');
+  }
+
   vector<Dlong> out;
 
   Dlong temp;
@@ -82,7 +96,7 @@ vector<Dlong> RSA::codificarMensaje(string mensaje) {
 Dlong RSA::blockCypher(string block, Dlong blockSize) {
   Dlong out = 0;
   for (Dlong i = 0; i < blockSize; i++)
-    out += ((block[i] == ' ')? alfabeto.find('X') : alfabeto.find(block[i])) * ExponenciacionRapida(alfabeto.size(), blockSize - (i + 1), _n); // Modulo infinito?
+    out += ((block[i] == ' ')? alfabeto.find('X') : alfabeto.find(block[i])) * ExponenciacionRapida(alfabeto.size(), blockSize - (i + 1), _n);
   return out;
 }
 
@@ -128,7 +142,7 @@ bool RSA::lehmanPeralta(Dlong p) {
 	//Enteros aleatorios entre 2 y p-1
 	std::vector<Dlong> randPrimes;
 
-	for (Dlong i = 0; i < 6; i++) // 65 + rand() % (122 - 65)
+	for (Dlong i = 0; i < nPrimos; i++)
 		randPrimes.push_back(2 + rand() %((p - 1) - 2));
 
 	// Ai^((p-1)/2) % p. Todos deben dar 1, desde que 1 falle, no lo es.
@@ -153,8 +167,5 @@ bool RSA::lehmanPeralta(Dlong p) {
 			return false;
 	}
 
-	//Tal vez es primo
 	return true;
 }
-
-
